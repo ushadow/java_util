@@ -157,6 +157,7 @@ public class ClipPlayer implements LineListener {
 			File	clipFile = new File(args[0]);
 			int		nLoopCount = Integer.parseInt(args[1]);
 			ClipPlayer	clipPlayer = new ClipPlayer(clipFile, nLoopCount);
+			clipPlayer.start();
 
 			/* In the JDK 5.0, the program would exit if we leave the
 			   main loop here. This is because all Java Sound threads
