@@ -9,15 +9,14 @@ import java.io.OutputStream;
 
 public class FileUtils {
 
-	public final static String JPEG = "jpeg";
+  public final static String JPEG = "jpeg";
   public final static String JPG = "jpg";
   public final static String GIF = "gif";
   public final static String TIFF = "tiff";
   public final static String TIF = "tif";
   public final static String PNG = "png";
 
-	public static void copyFile(String src, String dst) throws IOException
-	{
+	public static void copyFile(String src, String dst) throws IOException {
 		InputStream in = new FileInputStream(src);
 		OutputStream out = new FileOutputStream(dst);
 		
@@ -44,8 +43,7 @@ public class FileUtils {
       return ext;
   }
   
-  public static File setExtension(File f, String ext)
-  {
+  public static File setExtension(File f, String ext) {
   	String path = f.getPath();
   	int i = path.lastIndexOf('.');
   	String newPath = "";
@@ -56,5 +54,4 @@ public class FileUtils {
   		newPath = path + '.' + ext;
   	return new File(newPath);
   }
-
 }
