@@ -36,9 +36,9 @@ import javax.sound.sampled.SourceDataLine;
 
 	<formalpara><title>Bugs, limitations</title>
 
-	<para>Only PCM encoded files are supported (i.e. .wav file is supported). A-law, &mu;-law,
-	ADPCM, ogg vorbis, mp3 and other compressed data formats are not
-	supported. For playing these, see <olink targetdoc="AudioPlayer"
+	<para>Only PCM encoded files are supported (i.e. .wav file is supported). 
+	A-law, &mu;-law, ADPCM, ogg vorbis, mp3 and other compressed data formats are 
+	not supported. For playing these, see <olink targetdoc="AudioPlayer"
 	targetptr="AudioPlayer">AudioPlayer</olink>.</para>
 
 	</formalpara>
