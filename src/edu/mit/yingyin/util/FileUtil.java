@@ -47,8 +47,8 @@ public class FileUtil {
   	String path = f.getPath();
   	int i = path.lastIndexOf('.');
   	String newPath = "";
-  	if (i>=0)
-  		newPath = path.substring(0, i+1) + ext;
+  	if (i >= 0)
+  		newPath = path.substring(0, i + 1) + ext;
   	else
   		//if there is no extension, append the extension
   		newPath = path + '.' + ext;
