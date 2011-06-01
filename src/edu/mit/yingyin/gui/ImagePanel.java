@@ -8,18 +8,14 @@ import javax.swing.JPanel;
 
 public class ImagePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
-	protected ImageView parent = null;
 	
 	protected BufferedImage myimg = null;
 		
-	public ImagePanel(ImageView iv, Dimension d) {
+	public ImagePanel(Dimension d) {
 	  setLayout(null);
 	  setOpaque(false);
 	  setPreferredSize(d);
-	  parent = iv;
 	}
-	    
-	public void setParent(ImageView imf) { parent = imf; }
 	    
   public void setImage(BufferedImage img) {
     this.myimg = img;

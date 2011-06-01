@@ -1,25 +1,20 @@
 package edu.mit.yingyin.gui;
 
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 
 /**
  * Main frame for display webcam images. Allows saving of the image.
  * @author Ying
  * 
  */
-public class ImageView extends JFrame {
+public class ImageViewer extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	protected ImagePanel ip = null;
 	protected StatusBar sb = null;
-	
-	/*menu*/
-	private JMenu menuOptions;
-	private JMenu menuFile;
 	
 	/**
 	 * Create an instance of main frame for displaying image frame captured from 
@@ -28,30 +23,19 @@ public class ImageView extends JFrame {
 	 * @param _wdf	Webcam driver for Firei cambera, it has to be initialized 
 	 *     before passed as a parameter.
 	 */
-	public ImageView(String title) {
+	public ImageViewer(String title, Dimension d) {
 		super(title);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     sb = new StatusBar();
     getContentPane().add(sb, java.awt.BorderLayout.SOUTH);
+    ip = new ImagePanel(d);
+    getContentPane().add(ip);
 
-    JMenuBar menuBar = new JMenuBar();
-    menuOptions = new JMenu("Options");
-    menuFile = new JMenu("File");
-  
-    menuBar.add(menuFile);
-    menuBar.add(menuOptions);
-    
-    setJMenuBar(menuBar);
+    showUI();
 	}
 	
-	public void addImagePanel(ImagePanel ip) {
-		this.ip = ip;
-		getContentPane().add(ip);
-	}
-	
-	public void setImage(BufferedImage bi) {
-		if(ip!=null)
+	public void show(BufferedImage bi) {
+		if(ip != null)
 			ip.setImage(bi);
 	}
 	
