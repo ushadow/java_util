@@ -1,10 +1,12 @@
 package edu.mit.yingyin.util;
 
+import java.awt.Point;
+
 import javax.vecmath.Quat4f;
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
-public class QuatUtil {
+public class Geometry {
 	/**
 	 * Calculates the euler angles from the quaternion, positive direction of the 
 	 * rotaion follows the right hand rule: if the thumb of the right hand is 
@@ -43,5 +45,27 @@ public class QuatUtil {
 		tuple3f.y = heading;
 		tuple3f.z = attitude;
 		return tuple3f;
+	}
+	
+	/** 
+	 * Calculates angle C of triangle ABC.
+	 * 
+	 * @param A Point A of the triangle.
+	 * @param B Point B of the triangle.
+	 * @param C Point C of the triangle.
+	 * @return angle of C.
+	 */
+	static public double getAngleC(Point A, Point B, Point C) {
+	  Point vCA = new Point(A.x - C.x, A.y - C.y);
+	  double distSqCA = vCA.distanceSq(0, 0);
+	  if (distSqCA == 0)
+	    return 0;
+	  Point vCB = new Point(B.x - C.x, B.y - C.y);
+	  double distSqCB = vCB.distanceSq(0, 0);
+	  if (distSqCB == 0)
+	    return 0;
+	  // Cosine rule: c^2 = a^2 + b^2 - 2abcosC
+	  return Math.acos((vCA.x * vCB.x + vCA.y * vCB.y) / 
+	      Math.sqrt(distSqCA * distSqCB));
 	}
 }
