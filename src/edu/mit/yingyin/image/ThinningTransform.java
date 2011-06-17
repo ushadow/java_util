@@ -1,20 +1,22 @@
 package edu.mit.yingyin.image;
 
+import java.awt.Point;
+import java.util.HashSet;
+import java.util.Iterator;
+
 public class ThinningTransform {
   /**
    * Takes an image and a kernel and thins it once.
    * 
-   * @param b
-   *          the BinaryFast input image
-   * @param kernel
-   *          the thinning kernel
+   * @param b the BinaryFast input image
+   * @param kernel the thinning kernel
    * @return the thinned BinaryFast image
    */
-  public static BinaryFast ThinBinaryRep(BinaryFast b, int[] kernel) {
+  public static BinaryFast thinBinaryRep(BinaryFast b, int[] kernel) {
     Point p;
-    HashSet result = new HashSet();
-    HashSet inputHashSet = new HashSet();
-    if (HitMiss.kernelNo0s(kernel)) {
+    HashSet<Point> result = new HashSet<Point>();
+    HashSet<Point> inputHashSet = new HashSet<Point>();
+    if (HitMissTransform.kernelNo0s(kernel)) {
       for (int j = 0; j < b.h; ++j) {
         for (int i = 0; i < b.w; ++i) {
           if (b.pixels[i][j] == BinaryFast.foreground) {
@@ -23,13 +25,13 @@ public class ThinningTransform {
         }
       }
     } else {
-      Iterator it = b.foregroundEdgePixels.iterator();
+      Iterator<Point> it = b.foregroundEdgePixels.iterator();
       while (it.hasNext()) {
         inputHashSet.add(it.next());
       }
     }
-    result = HitMiss.HitMissHashSet(b, inputHashSet, kernel);
-    Iterator it = result.iterator();
+    result = HitMissTransform.HitMissHashSet(b, inputHashSet, kernel);
+    Iterator<Point> it = result.iterator();
     while (it.hasNext()) {
       p = new Point((Point) it.next());
       // make p a background pixel and update the edge sets
@@ -61,10 +63,10 @@ public class ThinningTransform {
    *          required
    * @return the thinned BinaryFast image
    */
-  public static BinaryFast thin_image(BinaryFast binary, int[] kernel,
+  public static BinaryFast thinImage(BinaryFast binary, int[] kernel,
       int iterations) {
     for (int i = 0; i < iterations; ++i) {
-      binary = ThinBinaryRep(binary, kernel);
+      binary = thinBinaryRep(binary, kernel);
     }
     binary.generateBackgroundEdgeFromForegroundEdge();
     return binary;

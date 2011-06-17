@@ -1,6 +1,8 @@
 package edu.mit.yingyin.image;
 
 import java.awt.Point;
+import java.util.HashSet;
+import java.util.Iterator;
 
 public class HitMissTransform {
   /**
@@ -37,5 +39,43 @@ public class HitMissTransform {
       }
     }
     return matched == 9;
+  }
+  
+  /**
+   * Applies the hitmiss operation to a set of pixels
+   * stored in a hash table.
+   *
+   * @param b the BinaryFast input image
+   * @param input the set of pixels requiring matching
+   * @param kernel the kernel to match them with
+   * @return A hash table containing all the successful matches.
+   */ 
+  public static HashSet<Point> HitMissHashSet(BinaryFast b, 
+               HashSet<Point> input,
+               int [] kernel){
+    HashSet<Point> output = new HashSet<Point>();
+    Iterator<Point> it = input.iterator();
+    while(it.hasNext()){
+      Point p = (Point) it.next();
+      if(kernelMatch((Point) p, b.pixels, b.w, b.h, kernel)){
+  //System.out.println("Match "+p.x+" "+p.y);
+  output.add(p);
+      }
+    }
+    //System.out.println(output.size());
+    return output;
+  }
+  
+  /**
+   * Returns true if the 3x3 kernel has no 0s.
+   *
+   * @param kernel the array storing the 9 values
+   * @return True if no 0s (false otherwise)
+   */
+  public static boolean kernelNo0s(int [] kernel){
+    for(int i=0;i<9;++i){
+      if(kernel[i]==0) return false;
+    }
+    return true;
   }
 }
