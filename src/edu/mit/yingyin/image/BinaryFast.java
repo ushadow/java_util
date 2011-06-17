@@ -198,17 +198,15 @@ public class BinaryFast {
     Iterator<Point> it = backgroundEdgePixels.iterator();
     while (it.hasNext()) {
       p = new Point((Point) it.next());
-      for (int j = -1; j < 2; ++j) {
+      for (int j = -1; j < 2; ++j) 
         for (int i = -1; i < 2; ++i) {
           if ((p.x + i >= 0) && (p.x + i < w) && (p.y + j >= 0) && 
               (p.y + j < h)) {
             p2 = new Point(p.x + i, p.y + j);
-            if (pixels[p2.x][p2.y] == foreground) {
+            if (pixels[p2.x][p2.y] == foreground) 
               foregroundEdgePixels.add(p2);
-            }
           }
         }
-      }
     }
   }
 
@@ -221,9 +219,8 @@ public class BinaryFast {
     int[] values1D = new int[s];
     int[] graylevel = new int[s];
     values1D = convertToArray();
-    for (int i = 0; i < s; i++) {
+    for (int i = 0; i < s; i++) 
       graylevel[i] = values1D[i] & 0x000000ff;
-    }
     return graylevel;
   }
 }
