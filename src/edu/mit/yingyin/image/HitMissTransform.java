@@ -4,21 +4,23 @@ import java.awt.Point;
 import java.util.HashSet;
 import java.util.Iterator;
 
+/**
+ * HitMissTransform is an algorithm to 'hit and miss' a binary image using a 
+ * 3x3 kernel.
+ *
+ * Modified from the code at 
+ * http://homepages.inf.ed.ac.uk/rbf/HIPR2/flatjavasrc/HitMiss.java
+ */
 public class HitMissTransform {
   /**
    * Returns true if the 8 neighbours of p match the kernel 0 is background 1 is
    * foreground 2 is don't care.
    * 
-   * @param p
-   *          the point at the centre of the 9 pixel neighbourhood
-   * @param pixels
-   *          the 2D array of the image
-   * @param w
-   *          the width of the image
-   * @param h
-   *          the height of the image
-   * @param kernel
-   *          the array of the kernel values
+   * @param p the point at the centre of the 9 pixel neighbourhood
+   * @param pixels the 2D array of the image
+   * @param w the width of the image
+   * @param h the height of the image
+   * @param kernel the array of the kernel values
    * @return True if the kernel and image match.
    */
   public static boolean kernelMatch(Point p, byte[][] pixels, int w, int h,

@@ -4,6 +4,13 @@ import java.awt.Point;
 import java.util.HashSet;
 import java.util.Iterator;
 
+/**
+ * BinaryFast is a representation of a binary image storing the foreground and 
+ * background edge pixels in hash tables for efficiency.
+ *
+ * Modified from the code at 
+ * http://homepages.inf.ed.ac.uk/rbf/HIPR2/flatjavasrc/BinaryFast.java
+ */
 public class BinaryFast {
   /**
    * Background is black.

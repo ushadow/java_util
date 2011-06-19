@@ -4,6 +4,12 @@ import java.awt.Point;
 import java.util.HashSet;
 import java.util.Iterator;
 
+/**
+ * Thin is an algorithm to thin a binary image using a 3x3 kernel.
+ *
+ * Modified from the code at 
+ * http://homepages.inf.ed.ac.uk/rbf/HIPR2/flatjavasrc/Thin.java
+ */
 public class ThinningTransform {
   /**
    * Takes an image and a kernel and thins it once.
