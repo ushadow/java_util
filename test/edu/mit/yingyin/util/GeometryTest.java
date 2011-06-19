@@ -1,6 +1,6 @@
 package edu.mit.yingyin.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.awt.Point;
 
@@ -8,6 +8,8 @@ import org.junit.Test;
 
 public class GeometryTest {
 
+  private static final float ACCURACY = (float) 1E-6;
+  
   @Test
   public void testGetAngleCOfCoincidentPoints() {
     Point A = new Point(0, 0);
@@ -28,28 +30,38 @@ public class GeometryTest {
     assertEquals(0, Geometry.getAngleC(A, B, C), 0);
     
     A = new Point(3, 0);
-    assertEquals(Math.PI, Geometry.getAngleC(A, B, C), 0.001);
+    assertEquals(Math.PI, Geometry.getAngleC(A, B, C), ACCURACY);
     
     B = new Point(3, 2);
     C = new Point(3, -1);
     assertEquals(0, Geometry.getAngleC(A, B, C), 0);
     
     C = new Point(3, 1);
-    assertEquals(Math.PI, Geometry.getAngleC(A, B, C), 0.001);
+    assertEquals(Math.PI, Geometry.getAngleC(A, B, C), ACCURACY);
   }
   
+  @Test
   public void testGetAngleCofRightAngle() {
     Point C = new Point(0, 0);
     Point A = new Point(0, 3);
     Point B = new Point(4, 0);
-    assertEquals(Math.PI / 2, Geometry.getAngleC(A, B, C), 0.001);
+    assertEquals(Math.PI / 2, Geometry.getAngleC(A, B, C), ACCURACY);
   }
   
+  @Test 
   public void testGetAngleCofObtuseAngle() {
+    Point C = new Point(0, 0);
+    Point A = new Point(1, 0);
+    Point B = new Point(-1, 1);
+    assertEquals(Math.PI * 3 / 4, Geometry.getAngleC(A, B, C), ACCURACY);
+  }
+  
+  @Test
+  public void testGetAngleCofAcuteAngle() {
     Point C = new Point(0, 0);
     Point A = new Point(0, 1);
     Point B = new Point(-1, 1);
-    assertEquals(Math.PI * 3 / 4, Geometry.getAngleC(A, B, C), 0.001);
+    assertEquals(Math.PI / 4, Geometry.getAngleC(A, B, C), ACCURACY);
   }
   
 }

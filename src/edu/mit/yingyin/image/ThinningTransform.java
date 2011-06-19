@@ -12,7 +12,7 @@ public class ThinningTransform {
    * @param kernel the thinning kernel
    * @return the thinned BinaryFast image
    */
-  public static BinaryFast thinBinaryRep(BinaryFast b, int[] kernel) {
+  public static BinaryFast thinBinaryOnce(BinaryFast b, int[] kernel) {
     Point p;
     HashSet<Point> result = new HashSet<Point>();
     HashSet<Point> inputHashSet = new HashSet<Point>();
@@ -39,15 +39,13 @@ public class ThinningTransform {
       b.foregroundEdgePixels.remove(p);
       b.backgroundEdgePixels.add(p);
       // check if new foreground pixels are exposed as edges
-      for (int j = -1; j < 2; ++j) {
-        for (int k = -1; k < 2; ++k) {
-          if (p.x + j >= 0 && p.y + k > 0 && p.x + j < b.w && p.y + k < b.h
-              && b.pixels[p.x + j][p.y + k] == BinaryFast.foreground) {
-            Point p2 = new Point(p.x + j, p.y + k);
+      for (int j = -1; j < 2; ++j) 
+        for (int i = -1; i < 2; ++i) 
+          if (p.x + i >= 0 && p.y + j > 0 && p.x + i < b.w && p.y + j < b.h
+              && b.pixels[p.y + j][p.x + i] == BinaryFast.foreground) {
+            Point p2 = new Point(p.x + i, p.y + j);
             b.foregroundEdgePixels.add(p2);
           }
-        }
-      }
     }
     return b;
   }
@@ -66,7 +64,7 @@ public class ThinningTransform {
   public static BinaryFast thinImage(BinaryFast binary, int[] kernel,
       int iterations) {
     for (int i = 0; i < iterations; ++i) {
-      binary = thinBinaryRep(binary, kernel);
+      binary = thinBinaryOnce(binary, kernel);
     }
     binary.generateBackgroundEdgeFromForegroundEdge();
     return binary;

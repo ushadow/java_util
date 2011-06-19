@@ -1,6 +1,5 @@
 package edu.mit.yingyin.image;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,11 +8,11 @@ public class BinaryFast {
   /**
    * Background is black.
    */
-  public static final int background = (new Color(0, 0, 0)).getRGB();
+  public static final byte background = 0;
   /**
    * Foreground is white.
    */
-  public static final int foreground = (new Color(255, 255, 255)).getRGB();
+  public static final byte foreground = 1;
   /**
    * Width of the image.
    */
@@ -29,7 +28,7 @@ public class BinaryFast {
   /**
    * The 2D array of all pixels.
    */
-  public int[][] pixels;
+  public byte[][] pixels;
   /**
    * The hash set storing positions of foreground edge pixels as Points.
    */
@@ -46,7 +45,7 @@ public class BinaryFast {
    * @param width The width of the image.
    * @param height The height of the image.
    */
-  public BinaryFast(int[][] p, int width, int height) { 
+  public BinaryFast(byte[][] p, int width, int height) { 
     pixels = p;
     w = width;
     h = height;
@@ -76,7 +75,7 @@ public class BinaryFast {
     while (it2.hasNext()) {
       foregroundEdgePixels.add(it2.next());
     }
-    pixels = (int[][]) oldBinary.pixels.clone();
+    pixels = (byte[][]) oldBinary.pixels.clone();
   }
 
   /**
@@ -85,7 +84,7 @@ public class BinaryFast {
    * 
    * @param p The point to be removed.
    */
-  public void removePixel(Point p) { pixels[p.x][p.y] = background; }
+  public void removePixel(Point p) { pixels[p.y][p.x] = background; }
 
   /**
    * Adds a foreground pixel to the 2D array by setting its value to foreground.
@@ -93,21 +92,6 @@ public class BinaryFast {
    * @param p The point to be added.
    */
   public void addPixel(Point p) { pixels[p.x][p.y] = foreground; }
-
-  /**
-   * Converts the 2D array into a 1D array of pixel values.
-   * 
-   * @return The 1D array of pixel values.
-   */
-  public int[] convertToArray() {
-    int[] p = new int[s];
-    for (int j = 0; j < h; ++j) {
-      for (int i = 0; i < w; ++i) {
-        p[(j * w) + i] = pixels[i][j];
-      }
-    }
-    return p;
-  }
 
   /**
    * Generates a new 2D array of pixels from a hash set of foreground pixels.
@@ -118,7 +102,7 @@ public class BinaryFast {
     // Reset all pixels to background
     for (int j = 0; j < h; ++j) {
       for (int i = 0; i < w; ++i) {
-        pixels[i][j] = background;
+        pixels[j][i] = background;
       }
     }
     convertToPixels(pix);
@@ -135,7 +119,7 @@ public class BinaryFast {
     Iterator<Point> it = pix.iterator();
     while (it.hasNext()) {
       p = (Point) it.next();
-      pixels[p.x][p.y] = foreground;
+      pixels[p.y][p.x] = foreground;
     }
   }
 
@@ -147,13 +131,13 @@ public class BinaryFast {
     Point p;
     for (int n = 0; n < h; ++n) {
       for (int m = 0; m < w; ++m) {
-        if (pixels[m][n] == foreground) {
+        if (pixels[n][m] == foreground) {
           p = new Point(m, n);
           boolean done = false;
           for (int j = -1; j < 2; ++j) {
             for (int i = -1; i < 2; ++i) {
               if (p.x + i >= 0 && p.x + i < w && p.y + j >= 0 && 
-                  p.y + j < h && pixels[p.x + i][p.y + j] == background) {
+                  p.y + j < h && pixels[p.y + j][p.x + i] == background) {
                 foregroundEdgePixels.add(p);
                 done = true;
                 break;
@@ -180,7 +164,7 @@ public class BinaryFast {
         for (int i = -1; i < 2; ++i) {
           if (p.x + i >= 0 && p.x + i < w && p.y + j >= 0 && p.y + j < h) {
             p2 = new Point(p.x + i, p.y + j);
-            if (pixels[p2.x][p2.y] == background) 
+            if (pixels[p2.y][p2.x] == background) 
               backgroundEdgePixels.add(p2);
           }
         }
@@ -203,24 +187,10 @@ public class BinaryFast {
           if ((p.x + i >= 0) && (p.x + i < w) && (p.y + j >= 0) && 
               (p.y + j < h)) {
             p2 = new Point(p.x + i, p.y + j);
-            if (pixels[p2.x][p2.y] == foreground) 
+            if (pixels[p2.y][p2.x] == foreground) 
               foregroundEdgePixels.add(p2);
           }
         }
     }
-  }
-
-  /**
-   * Returns the int [] values of the Binary Fast image
-   * 
-   * @return int[] the greylevel array of the image
-   */
-  public int[] getValues() {
-    int[] values1D = new int[s];
-    int[] graylevel = new int[s];
-    values1D = convertToArray();
-    for (int i = 0; i < s; i++) 
-      graylevel[i] = values1D[i] & 0x000000ff;
-    return graylevel;
   }
 }
