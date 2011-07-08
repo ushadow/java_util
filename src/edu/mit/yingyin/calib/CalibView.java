@@ -17,7 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import edu.mit.yingyin.util.SystemUtils;
+import edu.mit.yingyin.util.SystemUtil;
 
 public class CalibView extends JFrame implements KeyListener {
   private class ImagePanel extends JPanel implements MouseListener {
@@ -119,7 +119,6 @@ public class CalibView extends JFrame implements KeyListener {
 
   public CalibView(GeoCalibModel icm) {
     super("Calibration Pattern");
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setUndecorated(true);
     setResizable(false);
 
@@ -133,7 +132,7 @@ public class CalibView extends JFrame implements KeyListener {
     getContentPane().add(ip);
     addKeyListener(this);
     
-    Dimension screenSize = SystemUtils.getVirtualScreenBounds().getSize();
+    Dimension screenSize = SystemUtil.getVirtualScreenBounds().getSize();
     int xLoc = (screenSize.width - bi.getWidth()) / 2;
     int yLoc = screenSize.height - bi.getHeight();
     xLoc = xLoc < 0 ? 0 : xLoc;
@@ -141,10 +140,9 @@ public class CalibView extends JFrame implements KeyListener {
     this.setLocation(xLoc, yLoc);
   }
 
-  public static void createAndShow(GeoCalibModel icm) {
-    CalibView imf = new CalibView(icm);
-    imf.pack();
-    imf.setVisible(true);
+  public void showView() {
+    pack();
+    setVisible(true);
   }
 
   public void setStatus(String status) {}
@@ -166,11 +164,6 @@ public class CalibView extends JFrame implements KeyListener {
       ip.update();
       break;
 
-    case KeyEvent.VK_Q:
-    case KeyEvent.VK_ESCAPE:
-      System.exit(0);
-      break;
-      
     default:
       break;
     }
