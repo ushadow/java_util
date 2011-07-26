@@ -30,5 +30,11 @@ public class CommandLineOptions {
     return line.getOptionValue(option, defaultValue);
   }
   
+  public static boolean hasOption(String option) {
+    if (line == null)
+      return false;
+    return line.hasOption(option);
+  }
+  
   private CommandLineOptions() {}
 }

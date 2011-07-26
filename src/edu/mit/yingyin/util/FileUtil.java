@@ -29,29 +29,40 @@ public class FileUtil {
 		out.close();
 	}
 	
-	/*
-   * Get the extension of a file. If there is no extension, return null.
+	/**
+   * Gets the extension of a file. If there is no extension, return null.
    */  
   public static String getExtension(File f) {
-      String ext = null;
-      String s = f.getName();
-      int i = s.lastIndexOf('.');
+    String ext = null;
+    String s = f.getName();
+    int i = s.lastIndexOf('.');
 
-      if (i > 0 &&  i < s.length() - 1) {
-          ext = s.substring(i+1).toLowerCase();
-      }
-      return ext;
+    if (i > 0 &&  i < s.length() - 1) {
+        ext = s.substring(i+1).toLowerCase();
+    }
+    return ext;
   }
   
   public static File setExtension(File f, String ext) {
   	String path = f.getPath();
-  	int i = path.lastIndexOf('.');
-  	String newPath = "";
-  	if (i >= 0)
-  		newPath = path.substring(0, i + 1) + ext;
-  	else
-  		//if there is no extension, append the extension
-  		newPath = path + '.' + ext;
-  	return new File(newPath);
+  	return new File(setExtension(path, ext));
+  }
+  
+  /**
+   * Creates a new file name with the new extension.
+   * 
+   * @param fileName the original file name.
+   * @param ext the new extension withoug '.'.
+   * @return new file name.
+   */
+  public static String setExtension(String fileName, String ext) {
+    int i = fileName.lastIndexOf('.');
+    String newPath = "";
+    if (i >= 0)
+      newPath = fileName.substring(0, i + 1) + ext;
+    else
+      //if there is no extension, append the extension
+      newPath = fileName + '.' + ext;
+    return newPath;
   }
 }
