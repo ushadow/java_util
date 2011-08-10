@@ -93,21 +93,22 @@ public class GeoCalibModel {
     return pts;
   }
 
-  public void saveImagePoints() {
+  public void saveImagePoints(String fileName) {
     PrintStream ps = null;
 
+    if (fileName == null || fileName.isEmpty())
+      fileName = ptsFileName;
     try {
-      ps = new PrintStream(new FileOutputStream(ptsFileName));
-      for (Point p : imagePoints) {
+      ps = new PrintStream(new FileOutputStream(fileName));
+      for (Point p : imagePoints) 
         ps.println(p.x + " " + p.y);
-      }
       System.out.println("Written to file.");
     } catch (FileNotFoundException e) {
       e.printStackTrace();
+    } finally {
+      if (ps != null)
+        ps.close();
     }
-
-    if (ps != null)
-      ps.close();
   }
 
   public boolean isScrnCoord() { return isScrnCoord; }
@@ -115,4 +116,8 @@ public class GeoCalibModel {
   public BufferedImage getImage() { return bi; }
 
   public void clearPoints() { imagePoints.clear(); }
+  
+  public String getPointsFileName() {
+    return ptsFileName;
+  }
 }

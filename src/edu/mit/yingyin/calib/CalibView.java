@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -26,13 +27,13 @@ public class CalibView extends JFrame implements KeyListener {
     private static final int OVAL_WIDTH = 10;
 
     private BufferedImage myimg = null;
-    private GeoCalibModel icm;
+    private GeoCalibModel model;
 
     public ImagePanel(CalibView imf, Dimension d, GeoCalibModel icm) {
       super();
       setLayout(null);
       setPreferredSize(d);
-      this.icm = icm;
+      this.model = icm;
       addMouseListener(this);
       setOpaque(false);
     }
@@ -63,11 +64,11 @@ public class CalibView extends JFrame implements KeyListener {
       if (myimg != null)
         g2d.drawImage(myimg, null, 0, 0);
 
-      List<Point> pts = icm.getImagePoints();
+      List<Point> pts = model.getImagePoints();
 
       g2d.setColor(Color.RED);
       for (Point p : pts) {
-        if (icm.isScrnCoord())
+        if (model.isScrnCoord())
           SwingUtilities.convertPointFromScreen(p, this);
 
         g2d.drawOval(p.x - OVAL_WIDTH / 2, p.y - OVAL_WIDTH / 2, OVAL_WIDTH, 
@@ -84,17 +85,17 @@ public class CalibView extends JFrame implements KeyListener {
           InputEvent.BUTTON1_DOWN_MASK) {
         // Convert a point from a component's coordinate system to screen
         // coordinates.
-        if (icm.isScrnCoord())
+        if (model.isScrnCoord())
           SwingUtilities.convertPointToScreen(p, this);
 
-        icm.addImagePoint(p);
+        model.addImagePoint(p);
         repaint();
       }
 
       // right click
       if ((e.getModifiersEx() | InputEvent.BUTTON3_DOWN_MASK) == 
           InputEvent.BUTTON3_DOWN_MASK) {
-        icm.removeLastPoint();
+        model.removeLastPoint();
         repaint();
       }
     }
@@ -115,14 +116,14 @@ public class CalibView extends JFrame implements KeyListener {
   private static final long serialVersionUID = -6672495506940884693L;
 
   ImagePanel ip;
-  GeoCalibModel icm;
+  GeoCalibModel model;
 
   public CalibView(GeoCalibModel icm) {
     super("Calibration Pattern");
     setUndecorated(true);
     setResizable(false);
 
-    this.icm = icm;
+    this.model = icm;
     BufferedImage bi = icm.getImage();
 
     ip = new ImagePanel(this, new Dimension(bi.getWidth(), bi.getHeight()), 
@@ -151,16 +152,19 @@ public class CalibView extends JFrame implements KeyListener {
   public void keyPressed(KeyEvent ke) {
     switch (ke.getKeyCode()) {
     case KeyEvent.VK_S:
-      icm.saveImagePoints();
+      String fileName = (String)JOptionPane.showInputDialog(this, "File name:", 
+          "Save as", JOptionPane.PLAIN_MESSAGE, null, null, 
+          model.getPointsFileName());
+      model.saveImagePoints(fileName);
       break;
 
     case KeyEvent.VK_P:
-      icm.createPoints();
+      model.createPoints();
       ip.update();
       break;
 
     case KeyEvent.VK_C:
-      icm.clearPoints();
+      model.clearPoints();
       ip.update();
       break;
 

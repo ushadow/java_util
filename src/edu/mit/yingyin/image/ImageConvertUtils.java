@@ -247,7 +247,7 @@ public class ImageConvertUtils {
 	 * the size of BufferedImage, i.e. ib.capacity() == img.getWidth() * 
 	 * img.getHeight()
 	 * 
-	 * @author Ying
+	 * @author Ying Yin
 	 * 
 	 * @param ib each 4-byte (ARGB) integer in IntBuffer corresponds to a pixel in 
 	 *           the BufferedImage ib should have width*height of integers. ib is 
