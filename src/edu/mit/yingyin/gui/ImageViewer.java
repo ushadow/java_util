@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 public class ImageViewer extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	protected ImagePanel ip = null;
+	protected ImageComponent ip = null;
 	protected StatusBar sb = null;
 	
 	/**
@@ -27,11 +27,21 @@ public class ImageViewer extends JFrame {
 		super(title);
     sb = new StatusBar();
     getContentPane().add(sb, java.awt.BorderLayout.SOUTH);
-    ip = new ImagePanel(d);
+    ip = new ImageComponent(d);
     getContentPane().add(ip);
 
     showUI();
 	}
+	
+	public ImageViewer(String title, ImageComponent ic) {
+    super(title);
+    sb = new StatusBar();
+    getContentPane().add(sb, java.awt.BorderLayout.SOUTH);
+    ip = ic;
+    getContentPane().add(ip);
+
+    showUI();
+  }
 	
 	public void show(BufferedImage bi) {
 		if(ip != null)

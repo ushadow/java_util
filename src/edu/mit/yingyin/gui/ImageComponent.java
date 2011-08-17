@@ -4,14 +4,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import javax.swing.JPanel;
 
-public class ImagePanel extends JPanel {
+import javax.swing.JComponent;
+
+public class ImageComponent extends JComponent {
 	private static final long serialVersionUID = 1L;
 	
 	protected BufferedImage myimg = null;
 		
-	public ImagePanel(Dimension d) {
+	public ImageComponent(Dimension d) {
 	  setLayout(null);
 	  setOpaque(false);
 	  setPreferredSize(d);
@@ -22,6 +23,7 @@ public class ImagePanel extends JPanel {
     repaint();
   }
   
+  @Override
   public void update(Graphics g) { paint(g); }
   
   public void update() {
@@ -35,7 +37,8 @@ public class ImagePanel extends JPanel {
   	repaint();
   }
   
-  public void paint(Graphics g) {
+  protected void paintComponent(Graphics g) {
+    super.paintComponent(g);
     if (myimg != null) {
   	  ((Graphics2D)g).drawImage(myimg, null, 0, 0);
   	  g.dispose();
