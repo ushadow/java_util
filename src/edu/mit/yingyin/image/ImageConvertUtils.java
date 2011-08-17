@@ -273,7 +273,8 @@ public class ImageConvertUtils {
 	 * @param depth an integer array of depth values.
 	 * @param width width of the image returned.
 	 * @param height height of the image returned.
-	 * @return
+	 * @return a gray BufferedImage such that the brightness of each pixel is 
+	 *    inversely proportional to the depth from the camera.
 	 */
 	public static BufferedImage depthToGrayBufferedImage(int[] depth, int width,
 	                                                     int height) {
@@ -299,7 +300,7 @@ public class ImageConvertUtils {
   	  for (int i = 0; i < totalPixels; i++) {
         int value = depth[i];
         imageArray[i] = value == 0 ? 0 : 
-            (short)((value - min) * maxDepth / (max - min));
+            (short)((max - value) * maxDepth / (max - min));
       }
 	  }
 	  return image;

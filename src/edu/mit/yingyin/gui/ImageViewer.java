@@ -25,7 +25,6 @@ public class ImageViewer extends JFrame {
 	 */
 	public ImageViewer(String title, Dimension d) {
 		super(title);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     sb = new StatusBar();
     getContentPane().add(sb, java.awt.BorderLayout.SOUTH);
     ip = new ImagePanel(d);

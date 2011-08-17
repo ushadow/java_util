@@ -38,6 +38,7 @@ public class ImagePanel extends JPanel {
   public void paint(Graphics g) {
     if (myimg != null) {
   	  ((Graphics2D)g).drawImage(myimg, null, 0, 0);
+  	  g.dispose();
     }
   }
 }
