@@ -29,8 +29,10 @@ import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.DataBufferUShort;
 import java.awt.image.PixelGrabber;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 
@@ -262,6 +264,45 @@ public class ImageConvertUtils {
 		ib.get(rgbArray);
 		img.setRGB(0, 0, img.getWidth(), img.getHeight(), rgbArray, 0, 
 		    img.getWidth());
+	}
+	
+	/**
+	 * Converts an array of depth values to a gray BufferedImage.
+	 * 
+	 * The size of the array must equal to the produce of width and height.
+	 * @param depth an integer array of depth values.
+	 * @param width width of the image returned.
+	 * @param height height of the image returned.
+	 * @return
+	 */
+	public static BufferedImage depthToGrayBufferedImage(int[] depth, int width,
+	                                                     int height) {
+	  int maxDepth = 65535;
+	  BufferedImage image = new BufferedImage(width, height, 
+        BufferedImage.TYPE_USHORT_GRAY);
+	  short[] imageArray = ((DataBufferUShort)image.getRaster().getDataBuffer()).
+        getData();
+	  int totalPixels = width * height;
+	  int max = 0;
+    int min = maxDepth; // Two bytes.
+	  for (int i = 0; i < totalPixels; i++) {
+      int value = depth[i];
+      if (value != 0 ) { 
+        max = Math.max(max, value);
+        min = Math.min(min, value);
+      }
+    }
+	  
+	  if (min == max) {
+	    Arrays.fill(imageArray, (short)0);
+	  } else {
+  	  for (int i = 0; i < totalPixels; i++) {
+        int value = depth[i];
+        imageArray[i] = value == 0 ? 0 : 
+            (short)((value - min) * maxDepth / (max - min));
+      }
+	  }
+	  return image;
 	}
 }
 
