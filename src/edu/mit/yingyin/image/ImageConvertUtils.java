@@ -274,7 +274,7 @@ public class ImageConvertUtils {
 	 * @param width width of the image returned.
 	 * @param height height of the image returned.
 	 * @return a gray BufferedImage such that the brightness of each pixel is 
-	 *    inversely proportional to the depth from the camera.
+	 *    <i>inversely</i> proportional to the depth from the camera.
 	 */
 	public static BufferedImage depthToGrayBufferedImage(int[] depth, int width,
 	                                                     int height) {

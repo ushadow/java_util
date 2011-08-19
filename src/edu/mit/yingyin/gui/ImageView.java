@@ -10,7 +10,7 @@ import javax.swing.JFrame;
  * @author Ying
  * 
  */
-public class ImageViewer extends JFrame {
+public class ImageView extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	protected ImageComponent ip = null;
@@ -23,7 +23,7 @@ public class ImageViewer extends JFrame {
 	 * @param _wdf	Webcam driver for Firei cambera, it has to be initialized 
 	 *     before passed as a parameter.
 	 */
-	public ImageViewer(String title, Dimension d) {
+	public ImageView(String title, Dimension d) {
 		super(title);
     sb = new StatusBar();
     getContentPane().add(sb, java.awt.BorderLayout.SOUTH);
@@ -33,7 +33,7 @@ public class ImageViewer extends JFrame {
     showUI();
 	}
 	
-	public ImageViewer(String title, ImageComponent ic) {
+	public ImageView(String title, ImageComponent ic) {
     super(title);
     sb = new StatusBar();
     getContentPane().add(sb, java.awt.BorderLayout.SOUTH);

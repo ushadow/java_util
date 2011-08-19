@@ -38,8 +38,8 @@ public class ImageConvertUtilsTest {
         width, height);
     short[] imageArray = ((DataBufferUShort)image.getRaster().getDataBuffer()).
         getData();
-    for (int i = 1; i < width * height; i++)
-      assertTrue((imageArray[i] & 0xffff) >= (imageArray[i - 1] & 0xffff));
+    for (int i = 2; i < width * height; i++) {
+      assertTrue((imageArray[i] & 0xffff) <= (imageArray[i - 1] & 0xffff));
+    }
   }
-
 }
