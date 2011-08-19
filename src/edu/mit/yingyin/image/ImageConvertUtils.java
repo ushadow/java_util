@@ -1,22 +1,23 @@
 package edu.mit.yingyin.image;
 
-/* Image conversion utilities.
+/*
+ * Image conversion utilities.
  * 
  * Copyright (c) 2006 Jean-Sebastien Senecal (js@drone.ws)
  * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 675 Mass
+ * Ave, Cambridge, MA 02139, USA.
  */
 
 import java.awt.Graphics;
@@ -32,278 +33,341 @@ import java.awt.image.ColorModel;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.PixelGrabber;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 
 public class ImageConvertUtils {
 
-	/**
-	 * Converts an AWT Image into a grayscale BufferedImage.
-	 * 
-	 * @param image the image to convert
-	 * @return a BufferedImage
-	 */
-	public static BufferedImage toGrayBufferedImage(Image image) {
-		if (image instanceof BufferedImage 
-		    && ((BufferedImage)image).getType() == BufferedImage.TYPE_BYTE_GRAY)
-			return (BufferedImage)image;
+  /**
+   * Converts an AWT Image into a grayscale BufferedImage.
+   * 
+   * @param image the image to convert
+   * @return a BufferedImage
+   */
+  public static BufferedImage toGrayBufferedImage(Image image) {
+    if (image instanceof BufferedImage
+        && ((BufferedImage) image).getType() == BufferedImage.TYPE_BYTE_GRAY)
+      return (BufferedImage) image;
 
-		// This code ensures that all the pixels in the image are loaded
-		image = new ImageIcon(image).getImage();
-		// Create a buffered image with a format that's compatible with the screen
-		BufferedImage bimage = new BufferedImage(image.getWidth(null), 
-		    image.getHeight(null), BufferedImage.TYPE_BYTE_GRAY);
+    // This code ensures that all the pixels in the image are loaded
+    image = new ImageIcon(image).getImage();
+    // Create a buffered image with a format that's compatible with the screen
+    BufferedImage bimage = new BufferedImage(image.getWidth(null),
+        image.getHeight(null), BufferedImage.TYPE_BYTE_GRAY);
 
-		// Copy image to buffered image
-		Graphics g = bimage.createGraphics();
+    // Copy image to buffered image
+    Graphics g = bimage.createGraphics();
 
-		// Paint the image onto the buffered image
-		g.drawImage(image, 0, 0, null);
-		g.dispose();
+    // Paint the image onto the buffered image
+    g.drawImage(image, 0, 0, null);
+    g.dispose();
 
-		return bimage;
-	}
+    return bimage;
+  }
 
+  /**
+   * Converts an AWT Image into a BufferedImage, with specific type.
+   * 
+   * @param image the image to convert
+   * @param type the BufferedImage type
+   * @return a BufferedImage with the contents of the image
+   */
+  public static BufferedImage toBufferedImage(Image image, int type) {
+    if (image instanceof BufferedImage) {
+      return convertType((BufferedImage) image, type);
+    }
 
-	/**
-	 * Converts an AWT Image into a BufferedImage, with specific type.
-	 * 
-	 * @param image the image to convert
-	 * @param type the BufferedImage type
-	 * @return a BufferedImage with the contents of the image
-	 */
-	public static BufferedImage toBufferedImage(Image image, int type) {
-		if (image instanceof BufferedImage) {
-			return convertType((BufferedImage)image, type);
-		}
+    // This code ensures that all the pixels in the image are loaded
+    image = new ImageIcon(image).getImage();
 
-		// This code ensures that all the pixels in the image are loaded
-		image = new ImageIcon(image).getImage();
+    // Create a buffered image with a format that's compatible with the screen
+    BufferedImage bimage = new BufferedImage(image.getWidth(null),
+        image.getHeight(null), type);
 
-		// Create a buffered image with a format that's compatible with the screen
-		BufferedImage bimage = new BufferedImage(image.getWidth(null), 
-		                                         image.getHeight(null), type);
+    // Copy image to buffered image
+    Graphics g = bimage.createGraphics();
 
-		// Copy image to buffered image
-		Graphics g = bimage.createGraphics();
+    // Paint the image onto the buffered image
+    g.drawImage(image, 0, 0, null);
+    g.dispose();
 
-		// Paint the image onto the buffered image
-		g.drawImage(image, 0, 0, null);
-		g.dispose();
+    return bimage;
+  }
 
-		return bimage;
-	}
+  /**
+   * Converts an AWT Image into a BufferedImage.
+   * 
+   * @param image the image to convert
+   * @return a BufferedImage with the contents of the image
+   */
+  public static BufferedImage toBufferedImage(Image image) {
+    if (image instanceof BufferedImage) {
+      return (BufferedImage) image;
+    }
 
-	/**
-	 * Converts an AWT Image into a BufferedImage.
-	 * 
-	 * @param image the image to convert
-	 * @return a BufferedImage with the contents of the image
-	 */
-	public static BufferedImage toBufferedImage(Image image) {
-		if (image instanceof BufferedImage) {
-			return (BufferedImage)image;
-		}
+    // This code ensures that all the pixels in the image are loaded
+    image = new ImageIcon(image).getImage();
 
-		// This code ensures that all the pixels in the image are loaded
-		image = new ImageIcon(image).getImage();
+    // Determine if the image has transparent pixels; for this method's
+    // implementation, see e661 Determining If an Image Has Transparent Pixels
+    boolean hasAlpha = hasAlpha(image);
 
-		// Determine if the image has transparent pixels; for this method's
-		// implementation, see e661 Determining If an Image Has Transparent Pixels
-		boolean hasAlpha = hasAlpha(image);
+    // Create a buffered image with a format that's compatible with the screen
+    BufferedImage bimage = null;
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    try {
+      // Determine the type of transparency of the new buffered image
+      int transparency = hasAlpha ? Transparency.BITMASK : Transparency.OPAQUE;
 
-		// Create a buffered image with a format that's compatible with the screen
-		BufferedImage bimage = null;
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		try {
-			// Determine the type of transparency of the new buffered image
-			int transparency = hasAlpha ? Transparency.BITMASK : Transparency.OPAQUE;
+      // Create the buffered image
+      GraphicsDevice gs = ge.getDefaultScreenDevice();
+      GraphicsConfiguration gc = gs.getDefaultConfiguration();
+      bimage = gc.createCompatibleImage(image.getWidth(null),
+          image.getHeight(null), transparency);
+    } catch (HeadlessException e) {
+      // The system does not have a screen
+    }
 
-			// Create the buffered image
-			GraphicsDevice gs = ge.getDefaultScreenDevice();
-			GraphicsConfiguration gc = gs.getDefaultConfiguration();
-			bimage = gc.createCompatibleImage(
-					image.getWidth(null), image.getHeight(null), transparency);
-		} catch (HeadlessException e) {
-			// The system does not have a screen
-		}
+    if (bimage == null) {
+      // Create a buffered image using the default color model
+      int type = hasAlpha ? BufferedImage.TYPE_INT_ARGB
+          : BufferedImage.TYPE_INT_RGB;
+      bimage = new BufferedImage(image.getWidth(null), image.getHeight(null),
+          type);
+    }
 
-		if (bimage == null) {
-			// Create a buffered image using the default color model
-			int type = hasAlpha ? BufferedImage.TYPE_INT_ARGB 
-			                    : BufferedImage.TYPE_INT_RGB;
-			bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), 
-			                           type);
-		}
+    // Copy image to buffered image
+    Graphics g = bimage.createGraphics();
 
-		// Copy image to buffered image
-		Graphics g = bimage.createGraphics();
+    // Paint the image onto the buffered image
+    g.drawImage(image, 0, 0, null);
+    g.dispose();
 
-		// Paint the image onto the buffered image
-		g.drawImage(image, 0, 0, null);
-		g.dispose();
+    return bimage;
+  }
 
-		return bimage;
-	}
+  public static BufferedImage toOpaque(BufferedImage src) {
+    int w = src.getWidth();
+    int h = src.getHeight();
+    BufferedImage dest = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+    int[] alpha = new int[w * h];
+    for (int i = 0; i < alpha.length; ++i)
+      alpha[i] = Transparency.OPAQUE;
+    int buf[] = new int[w];
+    for (int y = 0; y < h; y++) {
+      src.getRGB(0, y, w, 1, buf, 0, w);
+      dest.setRGB(0, y, w, 1, buf, 0, w);
+    }
+    dest.getAlphaRaster().setPixels(0, 0, w, h, alpha);
+    return dest;
+  }
 
-	public static BufferedImage toOpaque(BufferedImage src) {
-		int w = src.getWidth();
-		int h = src.getHeight();
-		BufferedImage dest = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		int[] alpha = new int[w*h];
-		for (int i=0; i < alpha.length; ++i)
-			alpha[i] = Transparency.OPAQUE;
-		int buf[] = new int[w];
-		for (int y = 0; y < h; y++) {
-			src.getRGB(0, y, w, 1, buf, 0, w);
-			dest.setRGB(0, y, w, 1, buf, 0, w);
-		}
-		dest.getAlphaRaster().setPixels(0, 0, w, h, alpha);
-		return dest;
-	}
+  /**
+   * Converts a BufferedImage to the specified type.
+   * 
+   * @param src the source image
+   * @param type the BufferedImage type
+   * @return a BufferedImage with the right type
+   */
+  public static BufferedImage convertType(BufferedImage src, int type) {
+    if (src.getType() == type)
+      return src;
 
-	/**
-	 * Converts a BufferedImage to the specified type.
-	 * @param src the source image
-	 * @param type the BufferedImage type
-	 * @return a BufferedImage with the right type
-	 */
-	public static BufferedImage convertType(BufferedImage src, int type) {
-		if (src.getType() == type)
-			return src;
-		
-		int w = src.getWidth();
-		int h = src.getHeight();
-		BufferedImage image = new BufferedImage(w, h, type);
-		Graphics2D g2 = image.createGraphics();
-		g2.drawRenderedImage(src, null);
-		g2.dispose();
-		return image;
-	}
-	
-	/**
-	 * Convert pixels from java default ARGB int format to byte array in ABGR 
-	 * format.
-	 * @param pixels the pixels to convert
-	 */
-	public static void convertARGBtoABGR(int[] pixels)
-	{
-		int p, r, g, b, a;
-		for (int i = 0; i < pixels.length; i++) {
-			p = pixels[i];
-			a = (p >> 24) & 0xFF;  // get pixel bytes in ARGB order
-			r = (p >> 16) & 0xFF;
-			g = (p >> 8) & 0xFF;
-			b = (p >> 0) & 0xFF;
-			pixels[i] = (a << 24) | (b << 16) | (g << 8) | (r << 0);
-		}
-	}
+    int w = src.getWidth();
+    int h = src.getHeight();
+    BufferedImage image = new BufferedImage(w, h, type);
+    Graphics2D g2 = image.createGraphics();
+    g2.drawRenderedImage(src, null);
+    g2.dispose();
+    return image;
+  }
 
-	/**
-	 * Convert pixels from java default ABGR int format to byte array in ARGB 
-	 * format.
-	 * @param pixels the pixels to convert
-	 */
-	public static void convertABGRtoARGB(int[] pixels)
-	{
-		int p, r, g, b, a;
-		for (int i = 0; i < pixels.length; i++) {
-			p = pixels[i];
-			a = (p >> 24) & 0xFF;  // get pixel bytes in ARGB order
-			b = (p >> 16) & 0xFF;
-			g = (p >> 8) & 0xFF;
-			r = (p >> 0) & 0xFF;
-			pixels[i] = (a << 24) | (r << 16) | (g << 8) | (b << 0);
-		}
-	}
+  /**
+   * Convert pixels from java default ARGB int format to byte array in ABGR
+   * format.
+   * 
+   * @param pixels the pixels to convert
+   */
+  public static void convertARGBtoABGR(int[] pixels) {
+    int p, r, g, b, a;
+    for (int i = 0; i < pixels.length; i++) {
+      p = pixels[i];
+      a = (p >> 24) & 0xFF; // get pixel bytes in ARGB order
+      r = (p >> 16) & 0xFF;
+      g = (p >> 8) & 0xFF;
+      b = (p >> 0) & 0xFF;
+      pixels[i] = (a << 24) | (b << 16) | (g << 8) | (r << 0);
+    }
+  }
 
-	/**
-	 * Returns true if the specified image has transparent pixels.
-	 * 
-	 * @param image the image to test
-	 * @return true if the specified image has transparent pixels
-	 */
-	public static boolean hasAlpha(Image image) {
-		// If buffered image, the color model is readily available
-		if (image instanceof BufferedImage) {
-			BufferedImage bimage = (BufferedImage)image;
-			return bimage.getColorModel().hasAlpha();
-		}
+  /**
+   * Convert pixels from java default ABGR int format to byte array in ARGB
+   * format.
+   * 
+   * @param pixels the pixels to convert
+   */
+  public static void convertABGRtoARGB(int[] pixels) {
+    int p, r, g, b, a;
+    for (int i = 0; i < pixels.length; i++) {
+      p = pixels[i];
+      a = (p >> 24) & 0xFF; // get pixel bytes in ARGB order
+      b = (p >> 16) & 0xFF;
+      g = (p >> 8) & 0xFF;
+      r = (p >> 0) & 0xFF;
+      pixels[i] = (a << 24) | (r << 16) | (g << 8) | (b << 0);
+    }
+  }
 
-		// Use a pixel grabber to retrieve the image's color model;
-		// grabbing a single pixel is usually sufficient
-		PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
-		try {
-			pg.grabPixels();
-		} catch (InterruptedException e) {
-		}
+  /**
+   * Returns true if the specified image has transparent pixels.
+   * 
+   * @param image the image to test
+   * @return true if the specified image has transparent pixels
+   */
+  public static boolean hasAlpha(Image image) {
+    // If buffered image, the color model is readily available
+    if (image instanceof BufferedImage) {
+      BufferedImage bimage = (BufferedImage) image;
+      return bimage.getColorModel().hasAlpha();
+    }
 
-		// Get the image's color model
-		ColorModel cm = pg.getColorModel();
-		return cm.hasAlpha();
-	}
-	
-	/**
-	 * Convert IntBuffer to BufferedImage. The size of IntBuffer should equal to 
-	 * the size of BufferedImage, i.e. ib.capacity() == img.getWidth() * 
-	 * img.getHeight()
-	 * 
-	 * @author Ying Yin
-	 * 
-	 * @param ib each 4-byte (ARGB) integer in IntBuffer corresponds to a pixel in 
-	 *           the BufferedImage ib should have width*height of integers. ib is 
-	 *           little endian so the byte order is BGRA. ib is a direct buffer 
-	 *           which has no backup array, so ib.array() will fail.
-	 * @param bi BufferedImage should have type TYPE_INT_ARGB
-	 */
-	public static void IntBuffer2BufferedImage(IntBuffer ib, BufferedImage img) {
-		int[] rgbArray = new int[ib.capacity()];
-		// Sets the position to zero
-		ib.rewind();
-		ib.get(rgbArray);
-		img.setRGB(0, 0, img.getWidth(), img.getHeight(), rgbArray, 0, 
-		    img.getWidth());
-	}
-	
-	/**
-	 * Converts an array of depth values to a gray BufferedImage.
-	 * 
-	 * The size of the array must equal to the produce of width and height.
-	 * @param depth an integer array of depth values.
-	 * @param width width of the image returned.
-	 * @param height height of the image returned.
-	 * @return a gray BufferedImage such that the brightness of each pixel is 
-	 *    <i>inversely</i> proportional to the depth from the camera.
-	 */
-	public static BufferedImage depthToGrayBufferedImage(int[] depth, int width,
-	                                                     int height) {
-	  int maxDepth = 65535;
-	  BufferedImage image = new BufferedImage(width, height, 
+    // Use a pixel grabber to retrieve the image's color model;
+    // grabbing a single pixel is usually sufficient
+    PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
+    try {
+      pg.grabPixels();
+    } catch (InterruptedException e) {
+    }
+
+    // Get the image's color model
+    ColorModel cm = pg.getColorModel();
+    return cm.hasAlpha();
+  }
+
+  /**
+   * Convert IntBuffer to BufferedImage. The size of IntBuffer should equal to
+   * the size of BufferedImage, i.e. ib.capacity() == img.getWidth() *
+   * img.getHeight()
+   * 
+   * @author Ying Yin
+   * 
+   * @param ib each 4-byte (ARGB) integer in IntBuffer corresponds to a pixel in
+   *          the BufferedImage ib should have width*height of integers. ib is
+   *          little endian so the byte order is BGRA. ib is a direct buffer
+   *          which has no backup array, so ib.array() will fail.
+   * @param bi BufferedImage should have type TYPE_INT_ARGB
+   */
+  public static void IntBuffer2BufferedImage(IntBuffer ib, BufferedImage img) {
+    int[] rgbArray = new int[ib.capacity()];
+    // Sets the position to zero
+    ib.rewind();
+    ib.get(rgbArray);
+    img.setRGB(0, 0, img.getWidth(), img.getHeight(), rgbArray, 0,
+        img.getWidth());
+  }
+
+  /**
+   * Converts an array of depth values to a gray BufferedImage.
+   * 
+   * The size of the array must equal to the produce of width and height.
+   * 
+   * @param depth an integer array of depth values.
+   * @param width width of the image returned.
+   * @param height height of the image returned.
+   * @return a gray BufferedImage such that the brightness of each pixel is
+   *         <i>inversely</i> proportional to the depth from the camera.
+   */
+  public static BufferedImage depthToGrayBufferedImage(int[] depth, int width,
+      int height) {
+    final int MAX_DEPTH = 65535;
+    BufferedImage image = new BufferedImage(width, height,
         BufferedImage.TYPE_USHORT_GRAY);
-	  short[] imageArray = ((DataBufferUShort)image.getRaster().getDataBuffer()).
+    short[] imageArray = ((DataBufferUShort) image.getRaster().getDataBuffer()).
         getData();
-	  int totalPixels = width * height;
-	  int max = 0;
-    int min = maxDepth; // Two bytes.
-	  for (int i = 0; i < totalPixels; i++) {
+    int totalPixels = width * height;
+    int max = 0;
+    int min = MAX_DEPTH; // Two bytes.
+    for (int i = 0; i < totalPixels; i++) {
       int value = depth[i];
-      if (value != 0 ) { 
+      if (value != 0) {
         max = Math.max(max, value);
         min = Math.min(min, value);
       }
     }
-	  
-	  if (min == max) {
-	    Arrays.fill(imageArray, (short)0);
-	  } else {
-  	  for (int i = 0; i < totalPixels; i++) {
-        int value = depth[i];
-        imageArray[i] = value == 0 ? 0 : 
-            (short)((max - value) * maxDepth / (max - min));
-      }
-	  }
-	  return image;
-	}
-}
 
+    if (min == max) {
+      Arrays.fill(imageArray, (short) 0);
+    } else {
+      for (int i = 0; i < totalPixels; i++) {
+        int value = depth[i];
+        imageArray[i] = value == 0 ? 0
+            : (short) ((max - value) * MAX_DEPTH / (max - min));
+      }
+    }
+    return image;
+  }
+
+  public static BufferedImage depthToGrayBufferedImage(short[] depth,
+      int width, int height) {
+    final int MAX_DEPTH = 65535;
+    BufferedImage image = new BufferedImage(width, height,
+        BufferedImage.TYPE_USHORT_GRAY);
+    short[] imageArray = ((DataBufferUShort) image.getRaster().getDataBuffer()).
+        getData();
+    int totalPixels = width * height;
+    int max = 0;
+    int min = MAX_DEPTH; // Two bytes.
+    for (int i = 0; i < totalPixels; i++) {
+      int value = depth[i] & 0xffffffff;
+      if (value != 0) {
+        max = Math.max(max, value);
+        min = Math.min(min, value);
+      }
+    }
+
+    if (min == max) {
+      Arrays.fill(imageArray, (short) 0);
+    } else {
+      for (int i = 0; i < totalPixels; i++) {
+        int value = depth[i] & 0xffffffff;
+        imageArray[i] = value == 0 ? 0
+            : (short) ((max - value) * MAX_DEPTH / (max - min));
+      }
+    }
+    return image;
+  }
+
+  public static BufferedImage depthToGrayBufferedImage(ShortBuffer buffer,
+      int width, int height) {
+    final int MAX_DEPTH = 65535;
+    BufferedImage image = new BufferedImage(width, height,
+        BufferedImage.TYPE_USHORT_GRAY);
+    short[] imageArray = ((DataBufferUShort) image.getRaster().getDataBuffer()).
+        getData();
+    buffer.rewind();
+    int max = 0;
+    int min = MAX_DEPTH; // Two bytes.
+    while (buffer.remaining() > 0) {
+      int value = buffer.get() & 0xffffffff;
+      if (value != 0) {
+        max = Math.max(max, value);
+        min = Math.min(min, value);
+      }
+    }
+
+    if (min == max) {
+      Arrays.fill(imageArray, (short) 0);
+    } else {
+      buffer.rewind();
+      while (buffer.remaining() > 0) {
+        int pos = buffer.position();
+        int value = buffer.get() & 0xffffffff;
+        imageArray[pos] = value == 0 ? 0
+            : (short) ((max - value) * MAX_DEPTH / (max - min));
+      }
+    }
+    return image;
+  }
+}
