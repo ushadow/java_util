@@ -30,8 +30,10 @@ import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.PixelGrabber;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
@@ -259,14 +261,33 @@ public class ImageConvertUtils {
    *          which has no backup array, so ib.array() will fail.
    * @param bi BufferedImage should have type TYPE_INT_ARGB
    */
-  public static void IntBuffer2BufferedImage(IntBuffer ib, BufferedImage img) {
+  public static void intBuffer2BufferedImage(IntBuffer ib, BufferedImage img) {
     int[] rgbArray = new int[ib.capacity()];
-    // Sets the position to zero
     ib.rewind();
     ib.get(rgbArray);
     img.setRGB(0, 0, img.getWidth(), img.getHeight(), rgbArray, 0,
         img.getWidth());
   }
+  
+  /**
+   * Converts a ByteBuffer to a BufferedImage.
+   * @param bb a ByteBuffer with each byte representing R, G, B color bytes.
+   * @param bi a BufferedImage of TYPE_3BYTE_BGR. The size of the ByteBuffer 
+   *    must equal to the number of pixels of the BufferedImage * 3.
+   */
+  public static void byteBuffer2BufferedImage(ByteBuffer bb, BufferedImage bi) {
+    final int bytesPerPixel = 3;
+    byte[] imageArray = ((DataBufferByte)bi.getRaster().getDataBuffer()).
+        getData();
+    bb.rewind();
+    bb.get(imageArray);
+    int numPixels = bb.capacity() / bytesPerPixel;
+    for (int i = 0; i < numPixels; i++) {
+      byte tmp = imageArray[i * bytesPerPixel];
+      imageArray[i * bytesPerPixel] = imageArray[i * bytesPerPixel + 2];
+      imageArray[i * bytesPerPixel + 2] = tmp;
+    }
+  } 
 
   /**
    * Converts an array of depth values to a gray BufferedImage.
@@ -309,14 +330,11 @@ public class ImageConvertUtils {
     return image;
   }
 
-  public static BufferedImage depthToGrayBufferedImage(short[] depth,
-      int width, int height) {
+  public static void depthToGrayBufferedImage(short[] depth, BufferedImage bi) {
     final int MAX_DEPTH = 65535;
-    BufferedImage image = new BufferedImage(width, height,
-        BufferedImage.TYPE_USHORT_GRAY);
-    short[] imageArray = ((DataBufferUShort) image.getRaster().getDataBuffer()).
+    short[] imageArray = ((DataBufferUShort) bi.getRaster().getDataBuffer()).
         getData();
-    int totalPixels = width * height;
+    int totalPixels = bi.getWidth() * bi.getHeight();
     int max = 0;
     int min = MAX_DEPTH; // Two bytes.
     for (int i = 0; i < totalPixels; i++) {
@@ -336,15 +354,12 @@ public class ImageConvertUtils {
             : (short) ((max - value) * MAX_DEPTH / (max - min));
       }
     }
-    return image;
   }
 
-  public static BufferedImage depthToGrayBufferedImage(ShortBuffer buffer,
-      int width, int height) {
+  public static void depthToGrayBufferedImage(ShortBuffer buffer,
+      BufferedImage bi) {
     final int MAX_DEPTH = 65535;
-    BufferedImage image = new BufferedImage(width, height,
-        BufferedImage.TYPE_USHORT_GRAY);
-    short[] imageArray = ((DataBufferUShort) image.getRaster().getDataBuffer()).
+    short[] imageArray = ((DataBufferUShort) bi.getRaster().getDataBuffer()).
         getData();
     buffer.rewind();
     int max = 0;
@@ -368,6 +383,5 @@ public class ImageConvertUtils {
             : (short) ((max - value) * MAX_DEPTH / (max - min));
       }
     }
-    return image;
   }
 }

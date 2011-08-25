@@ -42,4 +42,9 @@ public class ImageConvertUtilsTest {
       assertTrue((imageArray[i] & 0xffff) <= (imageArray[i - 1] & 0xffff));
     }
   }
+  
+  @Test
+  public void testByteBuffer2BufferedImage() {
+    
+  }
 }
