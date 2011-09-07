@@ -1,6 +1,7 @@
 package edu.mit.yingyin.gui;
 
 import java.awt.Dimension;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
@@ -10,7 +11,7 @@ import javax.swing.JFrame;
  * @author Ying
  * 
  */
-public class ImageView extends JFrame {
+public class ImageFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	protected ImageComponent ic = null;
@@ -23,7 +24,7 @@ public class ImageView extends JFrame {
 	 * @param _wdf	Webcam driver for Firei cambera, it has to be initialized 
 	 *     before passed as a parameter.
 	 */
-	public ImageView(String title, Dimension d) {
+	public ImageFrame(String title, Dimension d) {
 		super(title);
     sb = new StatusBar();
     getContentPane().add(sb, java.awt.BorderLayout.SOUTH);
@@ -33,7 +34,7 @@ public class ImageView extends JFrame {
     showUI();
 	}
 	
-	public ImageView(String title, ImageComponent ic) {
+	public ImageFrame(String title, ImageComponent ic) {
     super(title);
     sb = new StatusBar();
     getContentPane().add(sb, java.awt.BorderLayout.SOUTH);
@@ -55,5 +56,10 @@ public class ImageView extends JFrame {
 	public void showUI() {
 		pack();
 		setVisible(true);
+	}
+	
+	public void addMouseListenerToImageComponent(MouseListener ml) {
+	  if (ic != null)
+	    ic.addMouseListener(ml);
 	}
 }

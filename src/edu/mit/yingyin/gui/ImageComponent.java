@@ -7,6 +7,11 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
+/**
+ * Component for displaying BufferedImage.
+ * @author yingyin
+ *
+ */
 public class ImageComponent extends JComponent {
 	private static final long serialVersionUID = 1L;
 	
