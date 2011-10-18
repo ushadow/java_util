@@ -1,5 +1,5 @@
-# Java utilities libary.
+# Java utility libary
 
 ## Dependencies:
 * commons-cli-1.2.jar
-+ vecmath.jar
+ * vecmath.jar
