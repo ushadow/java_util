@@ -1,5 +1,5 @@
-Ying Yin's Java utilities libary.
+# Ying Yin's Java utilities libary.
 
-Required jars:
+## Dependencies:
 * commons-cli-1.2.jar
 * vecmath.jar
