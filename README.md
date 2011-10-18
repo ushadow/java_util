@@ -2,4 +2,4 @@
 
 ## Dependencies:
 * commons-cli-1.2.jar
-** vecmath.jar
++ vecmath.jar
