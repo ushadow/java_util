@@ -270,7 +270,7 @@ public class ImageConvertUtils {
   }
   
   /**
-   * Converts a ByteBuffer to a BufferedImage.
+   * Converts a <code>ByteBuffer</code> to a <code>BufferedImage</code>.
    * @param bb a ByteBuffer with each byte representing R, G, B color bytes.
    * @param bi a BufferedImage of TYPE_3BYTE_BGR. The size of the ByteBuffer 
    *    must equal to the number of pixels of the BufferedImage * 3.
