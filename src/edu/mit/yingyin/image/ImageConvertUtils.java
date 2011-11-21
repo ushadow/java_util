@@ -349,13 +349,19 @@ public class ImageConvertUtils {
       Arrays.fill(imageArray, (short) 0);
     } else {
       for (int i = 0; i < totalPixels; i++) {
-        int value = depth[i] & 0xffffffff;
+        int value = depth[i] & 0x0000ffff;
         imageArray[i] = value == 0 ? 0
             : (short) ((max - value) * MAX_DEPTH / (max - min));
       }
     }
   }
 
+  /**
+   * Converts depth values in <code>ShortBuffer</code> to a gray scale 
+   * <code>BufferedImage</code>.
+   * @param buffer
+   * @param bi <BufferedImage> of with type <code>TYPE_USHORT_GRAY</code>
+   */
   public static void depthToGrayBufferedImage(ShortBuffer buffer,
       BufferedImage bi) {
     final int MAX_DEPTH = 65535;
@@ -365,7 +371,7 @@ public class ImageConvertUtils {
     int max = 0;
     int min = MAX_DEPTH; // Two bytes.
     while (buffer.remaining() > 0) {
-      int value = buffer.get() & 0xffffffff;
+      int value = buffer.get() & 0x0000ffff;
       if (value != 0) {
         max = Math.max(max, value);
         min = Math.min(min, value);
@@ -382,6 +388,73 @@ public class ImageConvertUtils {
         imageArray[pos] = value == 0 ? 0
             : (short) ((max - value) * MAX_DEPTH / (max - min));
       }
+    }
+  }
+  
+  /**
+   * Converts an array of integer values into a cumulative historgram.
+   * @param array an integer array.
+   * @param histogram keeps the cumulative frequencies of values in the 
+   *    <code>array</code> in the range (0, length of <code>histogram</code>).
+   */
+  public static void arrayToHistogram(int[] array, float[] histogram) {
+    Arrays.fill(histogram, 0);
+    
+    int totalPoints = 0;
+    for (int v : array) {
+      if (v > 0 && v < histogram.length) {
+        histogram[v]++;
+        totalPoints++;
+      }
+    }
+    
+    for (int i = 1; i < histogram.length; i++) 
+      histogram[i] += histogram[i - 1];
+  
+    if (totalPoints > 0) {
+      for (int i = 1; i < histogram.length; i++)
+        histogram[i] = (totalPoints - histogram[i]) / (float)totalPoints;
+    }
+  }
+  
+  /**
+   * Converts an array of short values into a cumulative historgram.
+   * @param array a short array.
+   * @param histogram keeps the cumulative frequencies of values in the 
+   *    <code>array</code> in the range (0, length of <code>histogram</code>).
+   */
+  public static void arrayToHistogram(short[] array, float[] histogram) {
+    Arrays.fill(histogram, 0);
+    
+    int totalPoints = 0;
+    for (short a : array) {
+      int v = a & 0xffffffff;
+      if (v > 0 && v < histogram.length) {
+        histogram[v]++;
+        totalPoints++;
+      }
+    }
+    
+    for (int i = 1; i < histogram.length; i++) 
+      histogram[i] += histogram[i - 1];
+  
+    if (totalPoints > 0) {
+      for (int i = 1; i < histogram.length; i++)
+        histogram[i] = (totalPoints - histogram[i]) / (float)totalPoints;
+    }
+  }
+  
+  public static void histogramToGrayBufferedImage(short[] array, 
+      float[] histogram, BufferedImage bi) {
+    short[] imageArray = ((DataBufferUShort) bi.getRaster().getDataBuffer()).
+        getData();
+    int totalPixels = bi.getWidth() * bi.getHeight();
+    for (int i = 0; i < totalPixels; i++) {
+      short a = array[i];
+      int v = a & 0x0000ffff;
+      if (v < 0 || v > histogram.length)
+        v = 0;
+      imageArray[i] = (short)(histogram[v] * 255);
     }
   }
 }
