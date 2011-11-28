@@ -338,7 +338,7 @@ public class ImageConvertUtils {
     int max = 0;
     int min = MAX_DEPTH; // Two bytes.
     for (int i = 0; i < totalPixels; i++) {
-      int value = depth[i] & 0xffffffff;
+      int value = depth[i] & 0x0000ffff;
       if (value != 0) {
         max = Math.max(max, value);
         min = Math.min(min, value);
@@ -384,7 +384,7 @@ public class ImageConvertUtils {
       buffer.rewind();
       while (buffer.remaining() > 0) {
         int pos = buffer.position();
-        int value = buffer.get() & 0xffffffff;
+        int value = buffer.get() & 0x0000ffff;
         imageArray[pos] = value == 0 ? 0
             : (short) ((max - value) * MAX_DEPTH / (max - min));
       }
@@ -425,10 +425,10 @@ public class ImageConvertUtils {
    */
   public static void arrayToHistogram(short[] array, float[] histogram) {
     Arrays.fill(histogram, 0);
-    
+
     int totalPoints = 0;
     for (short a : array) {
-      int v = a & 0xffffffff;
+      int v = a & 0x0000ffff;
       if (v > 0 && v < histogram.length) {
         histogram[v]++;
         totalPoints++;
@@ -444,7 +444,17 @@ public class ImageConvertUtils {
     }
   }
   
-  public static void histogramToGrayBufferedImage(short[] array, 
+  /**
+   * Converts an array of short values to <code>BufferedImage</code> with type
+   * TYPE_USHORT_GRAY based on the <code>histogram</code>.
+   * 
+   * @param array the array of short values.
+   * @param histogram cumulative frequencies of the values in the <code>array
+   *    </code>.
+   * @param bi converted <code>BufferedImage</code> with type TYPE_USHORT_GRAY. 
+   *    The higher the frequency, the greater the pixel value.
+   */
+  public static void histogramToBufferedImageUShort(short[] array, 
       float[] histogram, BufferedImage bi) {
     short[] imageArray = ((DataBufferUShort) bi.getRaster().getDataBuffer()).
         getData();
@@ -454,7 +464,7 @@ public class ImageConvertUtils {
       int v = a & 0x0000ffff;
       if (v < 0 || v > histogram.length)
         v = 0;
-      imageArray[i] = (short)(histogram[v] * 255);
+      imageArray[i] = (short)(histogram[v] * 65535);
     }
   }
 }

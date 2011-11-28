@@ -28,9 +28,9 @@ public class ImageConvertUtilsTest {
   
   @Test
   public void testDepthToGrayBufferedImageIncreasingDepth() {
-    int[] depth = new int[100];
     int width = 10;
     int height = 10;
+    int[] depth = new int[width * height];
     for (int i = 0; i < width * height; i++)
       depth[i] = i;
     
@@ -44,7 +44,28 @@ public class ImageConvertUtilsTest {
   }
   
   @Test
-  public void testByteBuffer2BufferedImage() {
+  public void testHistogramToBufferedImageUShort() {
+    int width = 5;
+    int height = 5;
+    int length = width * height;
+    short[] array = new short[length];
+    float[] histogram = new float[width];
     
+    for (int i = 0; i < array.length; i++) {
+      array[i] = (short)((length - 1) / 5);
+    }
+    
+    float total = (histogram.length - 1) * histogram.length / 2;
+    histogram[0] = 0;
+    for (int i = 1; i < histogram.length; i++)
+      histogram[i] = histogram[i - 1] + i / total;
+    
+    BufferedImage bi = new BufferedImage(width, height, 
+                                         BufferedImage.TYPE_USHORT_GRAY);
+    ImageConvertUtils.histogramToBufferedImageUShort(array, histogram, bi);
+    short[] imageArray = ((DataBufferUShort)bi.getRaster().getDataBuffer()).
+        getData();
+    for (int i = 0; i < imageArray.length; i++)
+      assertEquals((short)(65535 * histogram[array[i]]), imageArray[i]);
   }
 }
