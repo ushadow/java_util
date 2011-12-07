@@ -7,6 +7,10 @@ import java.util.Iterator;
 /**
  * Thin is an algorithm to thin a binary image using a 3x3 kernel.
  *
+ * If the foreground and background pixels in the kernel exactly match 
+ * foreground and background pixels in the image, the image pixel underneath 
+ * the origin of the kernel element is set to background.
+ * 
  * Modified from the code at 
  * http://homepages.inf.ed.ac.uk/rbf/HIPR2/flatjavasrc/Thin.java
  */
