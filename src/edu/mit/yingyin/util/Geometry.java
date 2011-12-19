@@ -4,6 +4,7 @@ import java.awt.Point;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Tuple3f;
+import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
 public class Geometry {
