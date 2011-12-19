@@ -1,5 +1,6 @@
 package edu.mit.yingyin.util;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Tuple2f;
 import javax.vecmath.Vector2f;
 
@@ -11,6 +12,10 @@ import javax.vecmath.Vector2f;
 public class Vector2fUtil {
   public static float dot(Vector2f a, Vector2f b) {
     return a.x * b.x + a.y * b.y;
+  }
+  
+  public static float cross(Vector2f a, Vector2f b) {
+    return a.x * b.y - a.y * b.x;
   }
   
   public static float lengthSquared(Tuple2f a) {
@@ -30,5 +35,27 @@ public class Vector2fUtil {
                                    Vector2fUtil.lengthSquared(b));
     float result = Vector2fUtil.dot(a, b) / denom;
     return (float)Math.acos(result);
+  }
+  
+  /**
+   * Calculates the intersection between 2 lines ab and cd.
+   * @param a point on line ab.
+   * @param b point on line ab.
+   * @param c point on line cd.
+   * @param d point on line cd.
+   * @return intersection of line ab and line cd.
+   */
+  public static Point2f intersection(Point2f a, Point2f b, Point2f c, Point2f d) 
+  {
+    Vector2f ac = new Vector2f();
+    Vector2f cd = new Vector2f();
+    Vector2f ab = new Vector2f();
+    Point2f result = new Point2f();
+    ac.sub(c, a);
+    cd.sub(d, c);
+    ab.sub(b, a);
+    float s = Vector2fUtil.cross(ac, cd) / Vector2fUtil.cross(ab, cd);
+    result.scaleAdd(s, ab, a);
+    return result;
   }
 }
