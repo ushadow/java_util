@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({GeometryTest.class, MatrixTest.class, FileUtilTest.class})
+@SuiteClasses({GeometryTest.class, MatrixTest.class, FileUtilTest.class, 
+               Vector2fUtilTest.class})
 public class AllTests {
 }

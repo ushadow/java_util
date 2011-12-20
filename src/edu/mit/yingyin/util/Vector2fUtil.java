@@ -10,6 +10,8 @@ import javax.vecmath.Vector2f;
  *
  */
 public class Vector2fUtil {
+  private static float EPS = (float)1e-5;
+  
   public static float dot(Vector2f a, Vector2f b) {
     return a.x * b.x + a.y * b.y;
   }
@@ -43,7 +45,8 @@ public class Vector2fUtil {
    * @param b point on line ab.
    * @param c point on line cd.
    * @param d point on line cd.
-   * @return intersection of line ab and line cd.
+   * @return null if ab and cd are parallel, otherwise the intersection of line 
+   *    ab and line cd.
    */
   public static Point2f intersection(Point2f a, Point2f b, Point2f c, Point2f d) 
   {
@@ -54,7 +57,10 @@ public class Vector2fUtil {
     ac.sub(c, a);
     cd.sub(d, c);
     ab.sub(b, a);
-    float s = Vector2fUtil.cross(ac, cd) / Vector2fUtil.cross(ab, cd);
+    float cp = Vector2fUtil.cross(ab, cd);
+    if (cp < EPS && cp > -EPS)
+      return null;
+    float s = Vector2fUtil.cross(ac, cd) / cp;
     result.scaleAdd(s, ab, a);
     return result;
   }
