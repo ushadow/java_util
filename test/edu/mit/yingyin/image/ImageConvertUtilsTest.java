@@ -4,11 +4,13 @@ import static org.junit.Assert.*;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferUShort;
+import java.nio.FloatBuffer;
 import java.util.Arrays;
 
 import org.junit.Test;
 
 public class ImageConvertUtilsTest {
+  private static final float EPS = (float)1e-6;
 
   @Test
   public void testDepthToGrayBufferedImageSameDepth() {
@@ -67,5 +69,26 @@ public class ImageConvertUtilsTest {
         getData();
     for (int i = 0; i < imageArray.length; i++)
       assertEquals((short)(65535 * histogram[array[i]]), imageArray[i]);
+  }
+  
+  @Test
+  public void testFloatBuffer2UShortGrayBufferedImage() {
+    int width = 5;
+    int height = 5;
+    int capacity = width * height;
+    BufferedImage image = new BufferedImage(width, height, 
+                                            BufferedImage.TYPE_USHORT_GRAY);
+    FloatBuffer fb = FloatBuffer.allocate(capacity);
+    fb.rewind();
+    for (int i = 0; i < capacity; i++)
+      fb.put((float)(i * 0.1));
+    ImageConvertUtils.floatBuffer2UShortGrayBufferedImage(fb, image, width);
+    short[] array = ((DataBufferUShort)image.getRaster().getDataBuffer())
+        .getData();
+    for (int i = 0; i < capacity; i++) {
+      float value = (float)(i * 0.1);
+      // Allows for rounding error.
+      assertEquals(value * 65535/ 2.4, array[i] & 0xffff, 0.5);
+    }
   }
 }

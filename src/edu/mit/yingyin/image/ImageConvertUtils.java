@@ -291,9 +291,11 @@ public class ImageConvertUtils {
   } 
 
   /**
+   * Converts float values to an unsigned short <code>BufferedImage</code>.
    * 
-   * @param floatBuffer
-   * @param bi
+   * @param floatBuffer contains float values. The size of the buffer must be at
+   *    least as big as the size of the image.
+   * @param bi <code>BufferedImage</code> with type TYPE_USHORT_GRAY. 
    * @param widthStep number of float values per row in 
    *    <code>floatBuffer</code>.
    * @return
@@ -315,10 +317,12 @@ public class ImageConvertUtils {
         getData();
     
     float range = max - min;
+    if (range == 0)
+      range = 1;
     for (int h = 0; h < height; h++)
       for (int w = 0; w < width; w++) {
         float value = floatBuffer.get(h * widthStep + w);
-        int converted = (int)((value - min) * MAX / range);
+        int converted = Math.round(((value - min) * MAX / range));
         array[h * width + w] = (short)converted;
       }
     return bi;
