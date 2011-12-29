@@ -34,6 +34,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.PixelGrabber;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
@@ -290,9 +291,44 @@ public class ImageConvertUtils {
   } 
 
   /**
+   * 
+   * @param floatBuffer
+   * @param bi
+   * @param widthStep number of float values per row in 
+   *    <code>floatBuffer</code>.
+   * @return
+   */
+  public static BufferedImage floatBuffer2UShortGrayBufferedImage(
+      FloatBuffer floatBuffer, BufferedImage bi, int widthStep) {
+    final int MAX = 65535;
+    float min = Float.MAX_VALUE;
+    float max = Float.MIN_VALUE;
+    int width = bi.getWidth();
+    int height = bi.getHeight();
+    for (int h = 0; h < height; h++)
+      for (int w = 0; w < width; w++) {
+        float value = floatBuffer.get(h * widthStep + w);
+        min = Math.min(min, value);
+        max = Math.max(max, value);
+      }
+    short[] array = ((DataBufferUShort)bi.getRaster().getDataBuffer()).
+        getData();
+    
+    float range = max - min;
+    for (int h = 0; h < height; h++)
+      for (int w = 0; w < width; w++) {
+        float value = floatBuffer.get(h * widthStep + w);
+        int converted = (int)((value - min) * MAX / range);
+        array[h * width + w] = (short)converted;
+      }
+    return bi;
+  }
+  
+  
+  /**
    * Converts an array of depth values to a gray BufferedImage.
    * 
-   * The size of the array must equal to the produce of width and height.
+   * The size of the array must equal to the product of width and height.
    * 
    * @param depth an integer array of depth values.
    * @param width width of the image returned.
