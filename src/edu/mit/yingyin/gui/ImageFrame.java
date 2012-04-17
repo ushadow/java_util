@@ -7,8 +7,9 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
 /**
- * Main frame for displaying images.
- * @author Ying
+ * Main frame for displaying images with a status bar at the bottom for viewing 
+ * some information of the image.
+ * @author Ying Yin
  * 
  */
 public class ImageFrame extends JFrame {
@@ -39,6 +40,11 @@ public class ImageFrame extends JFrame {
     initialize();
 	}
 	
+	/**
+	 * Creates an ImageFrame with an initial image.
+	 * @param title the title of the frame.
+	 * @param bi the image to be displayed.
+	 */
 	public ImageFrame(String title, BufferedImage bi) {
 	  super(title);
 	  ic = new ImageComponent(new Dimension(bi.getWidth(), bi.getHeight()));
@@ -46,7 +52,7 @@ public class ImageFrame extends JFrame {
 	  initialize();
 	}
 	
-	public void show(BufferedImage bi) {
+	public void updateImage(BufferedImage bi) {
 		if(ic != null)
 			ic.setImage(bi);
 	}

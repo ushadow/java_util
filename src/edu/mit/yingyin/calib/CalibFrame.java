@@ -25,7 +25,7 @@ import edu.mit.yingyin.util.SystemUtil;
  * @author yingyin
  *
  */
-public class CalibView extends JFrame implements KeyListener {
+public class CalibFrame extends JFrame implements KeyListener {
   private class ImagePanel extends JPanel implements MouseListener {
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public class CalibView extends JFrame implements KeyListener {
     private BufferedImage myimg = null;
     private GeoCalibModel model;
 
-    public ImagePanel(CalibView imf, Dimension d, GeoCalibModel icm) {
+    public ImagePanel(CalibFrame imf, Dimension d, GeoCalibModel icm) {
       super();
       setLayout(null);
       setPreferredSize(d);
@@ -127,7 +127,7 @@ public class CalibView extends JFrame implements KeyListener {
    * Creates a CabibView with a checkerboard image.
    * @param icm
    */
-  public CalibView(GeoCalibModel icm) {
+  public CalibFrame(GeoCalibModel icm) {
     super("Calibration Pattern");
     setUndecorated(true);
     setResizable(false);
@@ -150,7 +150,7 @@ public class CalibView extends JFrame implements KeyListener {
     this.setLocation(xLoc, yLoc);
   }
 
-  public void showView() {
+  public void showUI() {
     pack();
     setVisible(true);
   }
