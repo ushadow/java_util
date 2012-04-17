@@ -1,6 +1,7 @@
 package edu.mit.yingyin.image;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferUShort;
@@ -10,8 +11,6 @@ import java.util.Arrays;
 import org.junit.Test;
 
 public class ImageConvertUtilsTest {
-  private static final float EPS = (float)1e-6;
-
   @Test
   public void testDepthToGrayBufferedImageSameDepth() {
     int[] depth = new int[100];

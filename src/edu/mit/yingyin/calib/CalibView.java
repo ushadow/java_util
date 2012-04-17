@@ -20,6 +20,11 @@ import javax.swing.SwingUtilities;
 
 import edu.mit.yingyin.util.SystemUtil;
 
+/**
+ * View for camera calibration.
+ * @author yingyin
+ *
+ */
 public class CalibView extends JFrame implements KeyListener {
   private class ImagePanel extends JPanel implements MouseListener {
     private static final long serialVersionUID = 1L;
@@ -118,6 +123,10 @@ public class CalibView extends JFrame implements KeyListener {
   ImagePanel ip;
   GeoCalibModel model;
 
+  /**
+   * Creates a CabibView with a checkerboard image.
+   * @param icm
+   */
   public CalibView(GeoCalibModel icm) {
     super("Calibration Pattern");
     setUndecorated(true);
