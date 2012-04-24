@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 
 /**
- * Component for displaying BufferedImage.
+ * Swing component for displaying BufferedImage.
  * @author yingyin
  *
  */
@@ -28,20 +28,9 @@ public class ImageComponent extends JComponent {
     repaint();
   }
   
-  @Override
-  public void update(Graphics g) { paint(g); }
-  
-  public void update() {
-  	// Validates this container and all of its subcomponents.
-  	// The validate method is used to cause a container to lay out its 
-    // subcomponents again. 
-  	// It should be invoked when this container's subcomponents are modified 
-    // (added to or removed from the container, or layout-related information 
-    // changed) after the container has been displayed. 
-  	validate();
-  	repaint();
-  }
-  
+  /**
+   * Called by paint().
+   */
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
     if (myimg != null) {
