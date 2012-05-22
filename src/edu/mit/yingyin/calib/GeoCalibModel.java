@@ -14,6 +14,11 @@ import javax.imageio.ImageIO;
 
 import edu.mit.yingyin.util.FileUtil;
 
+/**
+ * Model for geometric calibration.
+ * @author yingyin
+ *
+ */
 public class GeoCalibModel {
 
   private static final int NUM_ROW = 6;

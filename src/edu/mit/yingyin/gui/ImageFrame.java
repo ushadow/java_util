@@ -75,7 +75,5 @@ public class ImageFrame extends JFrame {
 	  sb = new StatusBar();
     getContentPane().add(sb, java.awt.BorderLayout.SOUTH);
     getContentPane().add(ic);
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    showUI();
 	}
 }

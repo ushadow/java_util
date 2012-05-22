@@ -22,6 +22,15 @@ public class ImageComponent extends JComponent {
 	  setOpaque(false);
 	  setPreferredSize(d);
 	}
+	
+	/**
+	 * Creates an <code>ImageComponent</code> with an initial image.
+	 * @param img
+	 */
+	public ImageComponent(BufferedImage img) {
+	  this(new Dimension(img.getWidth(), img.getHeight()));
+	  setImage(img);
+	}
 	    
   public void setImage(BufferedImage img) {
     this.myimg = img;
